@@ -10,5 +10,6 @@ class Auteur extends Model
 
         'nom',
         'prenom',
+        'image',
     ];
 }
