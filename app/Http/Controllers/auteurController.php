@@ -226,3 +226,86 @@ class AuteurController extends Controller
 
 
 }
+
+
+    /*
+
+   public function importCsv(Request $request): RedirectResponse
+    {
+        $request ->validate([
+            'csv_file' => ['required', 'file', 'mimes:csv,txt'],
+        ]);
+
+        $file = $request->file('csv_file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        // Lecture du header
+        $rawHeader = fgetcsv($handle, 0, ',');
+
+        // Nettoyage des clés
+        $header = array_map(function ($key) {
+        return trim($key);
+        }, $rawHeader);
+
+
+        $doublons = 0;
+        $importes = 0;
+
+
+        while (($row = fgetcsv($handle, 0, ',')) !== false) {
+
+            $data = array_combine($header, $row);
+
+            $societe = CompteT::where('CT_Intitule', 'LIKE', $data['Raison Sociale'])->first();
+            $product =Product::where('nom', '=', $data["Libellé produit"])->first();
+
+
+                $licence = Licence::where('produit_id', $product->id)
+                    ->where('societe_id', $societe->CT_Num)
+                    ->first();
+
+                if ($licence) {
+                    $doublons++;
+                    continue; // on passe à la ligne suivante si il y a un doublon
+                }
+
+
+                Licence::create([
+                'produit_id'        => $product->id,
+                'cle'               => $data['N° Série'],
+                'reference_produit' => $data['Référence produit'] ?? null,
+                'code_activation'   => null,
+                'date_expiration'   => $data['Date fin contrat'] ?? null,
+                'societe_id'        => $societe->CT_Num,
+                'numero_serie'      => $data['N° Série'] ?? null,
+                'version_disponible'=> $data['Version'] ?? null,
+                'cle_referencement' => null,
+                'nb_users'          => null,
+            ]);
+
+            $importes++;
+        }
+
+
+         if ($doublons > 0) {
+        return redirect()->route('licences.index')
+
+            ->with('warning', "$importes licences importées. $doublons doublon(s) ignoré(s).");
+         }
+
+      return redirect()->route('licences.index')
+            ->with('success', "Licence créée avec succès, $importes licences importées.");
+
+    }
+
+
+
+
+    public function importForm(): Response // Affiche le formulaire d'importation de licences
+    {
+
+        return Inertia::render('licences/import'); // Affiche le formulaire d'importation de licences
+    }
+}
+
+*/
